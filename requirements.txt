@@ -1,1 +1,2 @@
--e .
+aws-cdk.aws_appsync==1.95.0
+aws-cdk.aws_dynamodb==1.95.0
