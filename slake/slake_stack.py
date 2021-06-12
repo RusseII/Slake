@@ -8,6 +8,7 @@ import os
 from aws_cdk import core
 import aws_cdk.aws_appsync as appsync
 import aws_cdk.aws_dynamodb as db
+from aws_cdk.aws_lambda_python import PythonFunction
 
 
 class SlakeStack(cdk.Stack):
@@ -15,42 +16,44 @@ class SlakeStack(cdk.Stack):
     def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        event_collector = PythonFunction(self, 'event_collector', entry=os.path.join(
+            os.getcwd(), 'slake/lambdas/event_collector'))
 
-        api = appsync.GraphqlApi(self, "Api",
-            name="demo",
-            schema=appsync.Schema.from_asset(os.path.join(
-                                         os.getcwd(), 'schema', 'graphql'),
-            authorization_config=AuthorizationConfig(
-                default_authorization=AuthorizationMode(
-                    authorization_type=appsync.AuthorizationType.IAM
-                )
-            ),
-            xray_enabled=True
-        )
+        # api = appsync.GraphqlApi(self, "Api",
+        #     name="demo",
+        #     schema=appsync.Schema.from_asset(os.path.join(
+        #                                  os.getcwd(), 'slake','schema.graphql')),
+        #     authorization_config=appsync.AuthorizationConfig(
+        #         default_authorization=appsync.AuthorizationMode(
+        #             authorization_type=appsync.AuthorizationType.IAM
+        #         )
+        #     ),
+        #     xray_enabled=True
+        # )
 
-        demo_table = db.Table(self, "DemoTable",
-            partition_key=Attribute(
-                name="id",
-                type=db.AttributeType.STRING
-            )
-        )
+        # demo_table = db.Table(self, "DemoTable",
+        #     partition_key=db.Attribute(
+        #         name="id",
+        #         type=db.AttributeType.STRING
+        #     )
+        # )
 
-        demo_dS = api.add_dynamo_db_data_source("demoDataSource", demo_table)
+        # demo_dS = api.add_dynamo_db_data_source("demoDataSource", demo_table)
 
-        # Resolver for the Query "getDemos" that scans the DynamoDb table and returns the entire list.
-        demo_dS.create_resolver(
-            type_name="Query",
-            field_name="getDemos",
-            request_mapping_template=appsync.MappingTemplate.dynamo_db_scan_table(),
-            response_mapping_template=appsync.MappingTemplate.dynamo_db_result_list()
-        )
+        # # Resolver for the Query "getDemos" that scans the DynamoDb table and returns the entire list.
+        # demo_dS.create_resolver(
+        #     type_name="Query",
+        #     field_name="getDemos",
+        #     request_mapping_template=appsync.MappingTemplate.dynamo_db_scan_table(),
+        #     response_mapping_template=appsync.MappingTemplate.dynamo_db_result_list()
+        # )
 
-        # Resolver for the Mutation "addDemo" that puts the item into the DynamoDb table.
-        demo_dS.create_resolver(
-            type_name="Mutation",
-            field_name="addDemo",
-            request_mapping_template=appsync.MappingTemplate.dynamo_db_put_item(
-                appsync.PrimaryKey.partition("id").auto(),
-                appsync.Values.projecting("input")),
-            response_mapping_template=appsync.MappingTemplate.dynamo_db_result_item()
-        )
+        # # Resolver for the Mutation "addDemo" that puts the item into the DynamoDb table.
+        # demo_dS.create_resolver(
+        #     type_name="Mutation",
+        #     field_name="addDemo",
+        #     request_mapping_template=appsync.MappingTemplate.dynamo_db_put_item(
+        #         appsync.PrimaryKey.partition("id").auto(),
+        #         appsync.Values.projecting("input")),
+        #     response_mapping_template=appsync.MappingTemplate.dynamo_db_result_item()
+        # )
