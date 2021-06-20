@@ -3,10 +3,12 @@ from decimal import Decimal
 import json
 import uuid
 import os
+from telegram_bot import morning_message, night_message
 
 dynamodb = boto3.resource('dynamodb')
 
 TABLE_NAME = os.environ['TABLE_NAME']
+
 
 def handler(event, context):
     print(event)
@@ -20,4 +22,12 @@ def handler(event, context):
         Item=event
     )
 
+    if event['clickType'] == 'SINGLE':
+        morning_message()
+
+    if event['clickType'] == 'DOUBLE':
+        night_message()
+        
     return response
+
+
