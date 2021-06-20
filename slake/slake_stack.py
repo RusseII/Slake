@@ -9,10 +9,14 @@ from aws_cdk import core
 from aws_cdk.aws_ec2 import Vpc, InstanceType
 import aws_cdk.aws_appsync as appsync
 import aws_cdk.aws_dynamodb as db
+import aws_cdk.aws_secretsmanager as secretsmanager
 
 from aws_cdk.aws_lambda_python import PythonFunction
 from aws_cdk.aws_dynamodb import Table, Attribute, AttributeType
 # from aws_cdk.aws_rds import DatabaseCluster, DatabaseInstance, DatabaseInstanceEngine, PostgresEngineVersion
+
+RUSSELL_BOT_SECRET_ARN = 'arn:aws:secretsmanager:us-west-2:576758376358:secret:russell_bot_api_key-kCsor9'
+
 
 
 class SlakeStack(cdk.Stack):
@@ -20,13 +24,18 @@ class SlakeStack(cdk.Stack):
     def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        twitch_client_secret = secretsmanager.Secret.from_secret_complete_arn(self, 'russell_bot_secret', RUSSELL_BOT_SECRET_ARN)
+
         db = Table(self, 'events', partition_key=Attribute(
             name='id', type=AttributeType.STRING))
 
         event_collector = PythonFunction(self, 'event_collector', entry=os.path.join(
             os.getcwd(), 'slake/lambdas/event_collector'), environment={'TABLE_NAME': db.table_name})
+        
 
         db.grant_write_data(event_collector)
+        twitch_client_secret.grant_read(event_collector)
+
 
         # vpc = Vpc(self, 'myrdsvpc')
 
