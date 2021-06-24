@@ -73,10 +73,10 @@ def get_secret():
 
 
 def send_telegram_message(status: Status):
-    if (status.name == Status.SINGLE):
+    if (status == Status.SINGLE):
         send("goodmonring u get the webhook ???? ")
 
-    if (status.name == Status.DOUBLE):
+    if (status == Status.DOUBLE):
         send('Goodnight did u get the webhook?')
 
 
