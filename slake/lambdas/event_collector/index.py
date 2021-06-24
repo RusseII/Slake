@@ -3,7 +3,9 @@ from decimal import Decimal
 import json
 import uuid
 import os
-from telegram_bot import morning_message, night_message
+from telegram_bot import send_telegram_message, Status
+from webhooks import send_webhooks
+
 
 dynamodb = boto3.resource('dynamodb')
 
@@ -22,12 +24,13 @@ def handler(event, context):
         Item=event
     )
 
-    if event['clickType'] == 'SINGLE':
-        morning_message()
+    send_telegram_message(Status[event['clickType']])
 
-    if event['clickType'] == 'DOUBLE':
-        night_message()
-        
+    webhook_data = {}
+    webhook_data['user'] = event['placementInfo']['attributes'].get('user')
+    webhook_data['status'] = Status[event['clickType']].value
+    send_webhooks(webhook_data)
+
     return response
 
 

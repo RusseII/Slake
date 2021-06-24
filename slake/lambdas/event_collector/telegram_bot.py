@@ -1,9 +1,8 @@
 import boto3
-from decimal import Decimal
 import json
-import uuid
-import os
 import requests
+from enum import Enum
+
 
 # Use this code snippet in your app.
 # If you need more information about configurations or implementing the sample code, visit the AWS docs:
@@ -14,6 +13,10 @@ from botocore.exceptions import ClientError
 
 
 chat_id = -475570287
+
+class Status(Enum):
+    SINGLE = "awake"
+    DOUBLE = "asleep"
 
 
 def get_secret():
@@ -69,11 +72,16 @@ def get_secret():
             return json.loads(decoded_binary_secret)['RUSSELL_BOT_API_KEY']
 
 
+def send_telegram_message(status: Status):
+    if (status.name == Status.SINGLE):
+        send("goodmonring u get the webhook ???? ")
 
-def night_message():
-    RUSSELL_BOT_API_KEY = get_secret()
-    requests.post(f'https://api.telegram.org/bot{RUSSELL_BOT_API_KEY}/sendMessage', data={"chat_id": chat_id, "text": "Goodnight. Russell turned off his electronics for the night :)"})
+    if (status.name == Status.DOUBLE):
+        send('Goodnight did u get the webhook?')
 
-def morning_message():
+
+def send(message: str):
     RUSSELL_BOT_API_KEY = get_secret()
-    requests.post(f'https://api.telegram.org/bot{RUSSELL_BOT_API_KEY}/sendMessage', data={"chat_id": chat_id, "text": "Russell just woke up. Good morning!"})
+    requests.post(f'https://api.telegram.org/bot{RUSSELL_BOT_API_KEY}/sendMessage', data={
+                      "chat_id": chat_id, "text": message})
+
