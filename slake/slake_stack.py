@@ -16,6 +16,7 @@ from aws_cdk.aws_dynamodb import Table, Attribute, AttributeType
 # from aws_cdk.aws_rds import DatabaseCluster, DatabaseInstance, DatabaseInstanceEngine, PostgresEngineVersion
 
 RUSSELL_BOT_SECRET_ARN = 'arn:aws:secretsmanager:us-west-2:576758376358:secret:russell_bot_api_key-kCsor9'
+RUSSELL_DWELO_PASS_ARN = 'arn:aws:secretsmanager:us-west-2:576758376358:secret:RUSSELL_DWELO_PASS-oQutn2'
 
 
 
@@ -25,6 +26,7 @@ class SlakeStack(cdk.Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         twitch_client_secret = secretsmanager.Secret.from_secret_complete_arn(self, 'russell_bot_secret', RUSSELL_BOT_SECRET_ARN)
+        dwelo_pass_secret = secretsmanager.Secret.from_secret_complete_arn(self, 'russell_dwello_pass', RUSSELL_DWELO_PASS_ARN)
 
         db = Table(self, 'events', partition_key=Attribute(
             name='id', type=AttributeType.STRING))
@@ -35,6 +37,7 @@ class SlakeStack(cdk.Stack):
 
         db.grant_write_data(event_collector)
         twitch_client_secret.grant_read(event_collector)
+        dwelo_pass_secret.grant_read(event_collector)
 
 
         # vpc = Vpc(self, 'myrdsvpc')
