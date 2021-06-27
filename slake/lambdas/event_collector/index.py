@@ -5,6 +5,7 @@ import uuid
 import os
 from telegram_bot import send_telegram_message, Status
 from webhooks import send_webhooks
+from dwelo import handle_dwelo
 
 
 dynamodb = boto3.resource('dynamodb')
@@ -30,6 +31,10 @@ def handler(event, context):
     webhook_data['user'] = event['placementInfo']['attributes'].get('user')
     webhook_data['status'] = Status[event['clickType']].value
     send_webhooks(webhook_data)
+
+    
+    handle_dwelo()
+
 
     return response
 
