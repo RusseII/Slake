@@ -13,10 +13,10 @@ class Status(Enum):
 
 def send_telegram_message(status: Status):
     if (status == Status.SINGLE):
-        send("goodmonring u get the webhook ???? ")
+        send("Hello good morning :) Looking forward to a great day!")
 
     if (status == Status.DOUBLE):
-        send('Goodnight did u get the webhook?')
+        send('Time to turn off electronics 4 bed. Cant wait until tomorrow!')
 
 
 def send(message: str):
