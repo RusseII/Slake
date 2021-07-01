@@ -22,7 +22,7 @@ class MyPipelineStack(Stack):
                 trigger=codepipeline_actions.GitHubTrigger.POLL,
                 # Replace these with your actual GitHub project info
                 owner="russeii",
-                repo="https://github.com/RusseII/Slake"),
+                repo="slake"),
             synth_action=SimpleSynthAction.standard_npm_synth(
                 source_artifact=source_artifact,
                 cloud_assembly_artifact=cloud_assembly_artifact,
