@@ -1,6 +1,8 @@
 from secrets import get_secret
 import requests
 dwelo_url = 'https://api.dwelo.com/v3'
+from dataclasses import dataclass
+from telegram_bot import Status
 
 
 def get_auth_token():
@@ -19,26 +21,41 @@ class Dwelo_Device:
 
     def off(self):
         resp = requests.post(
-            f'{dwelo_url}/device/{self.device.id}/command', json=self.device.command, headers=self.headers)
+            f'{dwelo_url}/device/{self.device.id}/command', json=self.device.off_command, headers=self.headers)
         print(resp.json())
 
+    def on(self):
+        resp = requests.post(
+            f'{dwelo_url}/device/{self.device.id}/command', json=self.device.on_command, headers=self.headers)
+        print(resp.json())
 
+@dataclass(Frozen=True)
 class Light:
     id = "381217"
-    command = {"command": "off"}
+    off_command = {"command": "off"}
+    on_command = {"command": "on"}
 
 
+@dataclass(Frozen=True)
 class Lock:
     id = "381219"
-    command = {"command": "lock"}
+    on_command = {"command": "lock"}
+    off_command = {"command": "unlock"}
 
 
-def handle_dwelo():
+
+def handle_dwelo(status: Status):
     token = get_auth_token()
     kitchen_light = Dwelo_Device(Light(), token)
     lock = Dwelo_Device(Lock(), token)
-    kitchen_light.off()
-    lock.off()
+    if (status == Status.SINGLE):
+        kitchen_light.on()
+        lock.off()
+        
+    if (status == Status.DOUBLE):
+        kitchen_light.off()
+        lock.on()
+  
 
 
 

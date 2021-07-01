@@ -2,4 +2,9 @@ aws-cdk.aws_appsync==1.95.0
 aws-cdk.aws_dynamodb==1.95.0
 aws_cdk.aws_lambda_python==1.95.0
 aws_cdk.aws_dynamodb==1.95.0
+aws_cdk.pipelines==1.95.0
+aws_cdk.aws_codebuild==1.95.0
+aws_cdk.aws_codepipeline==1.95.0
+aws_cdk.aws_codepipeline_actions==1.95.0
+
 boto3

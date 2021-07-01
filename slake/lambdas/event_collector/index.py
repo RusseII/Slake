@@ -33,7 +33,7 @@ def handler(event, context):
     send_webhooks(webhook_data)
 
     
-    handle_dwelo()
+    handle_dwelo(Status[event['clickType']])
 
 
     return response
