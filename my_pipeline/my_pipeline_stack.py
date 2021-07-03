@@ -24,7 +24,13 @@ class MyPipelineStack(Stack):
                 owner="RusseII",
                 repo="Slake",
                 branch="main"),
-            synth_action=SimpleSynthAction.standard_npm_synth(
+            synth_action=SimpleSynthAction(
+                install_commands=[
+                    'npm i -g aws-cdk',
+                    'pip install -r ./requirements.txt'
+                ],
+                synth_command="cdk synth",
+                environment={'privileged': True},
                 source_artifact=source_artifact,
                 cloud_assembly_artifact=cloud_assembly_artifact,
                 # Use this if you need a build step (if you're not using ts-node
