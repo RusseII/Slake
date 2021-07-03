@@ -18,11 +18,12 @@ class MyPipelineStack(Stack):
             source_action=codepipeline_actions.GitHubSourceAction(
                 action_name="GitHub",
                 output=source_artifact,
-                oauth_token=SecretValue.secrets_manager("GITHUB_TOKEN_NAME"),
+                oauth_token=SecretValue.secrets_manager("GITHUB_TOKEN_NAME", json_field="GITHUB_TOKEN_NAME"),
                 trigger=codepipeline_actions.GitHubTrigger.POLL,
                 # Replace these with your actual GitHub project info
-                owner="russeii",
-                repo="slake"),
+                owner="RusseII",
+                repo="Slake",
+                branch="main"),
             synth_action=SimpleSynthAction.standard_npm_synth(
                 source_artifact=source_artifact,
                 cloud_assembly_artifact=cloud_assembly_artifact,

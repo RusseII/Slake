@@ -32,8 +32,8 @@ class Dwelo_Device:
 @dataclass(Frozen=True)
 class Light:
     id = "381217"
-    off_command = {"command": "off"}
     on_command = {"command": "on"}
+    off_command = {"command": "off"}
 
 
 @dataclass(Frozen=True)
