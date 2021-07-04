@@ -27,5 +27,5 @@ async def send(message: str):
         payload = {"chat_id": chat_id, "text": message}
         async with session.post(f'https://api.telegram.org/bot{RUSSELL_BOT_API_KEY}/sendMessage',
                                 json=payload) as resp:
-            return await resp.json()
+            return resp.status
 

@@ -6,7 +6,9 @@ webhookUrls = ["https://hooks.nabu.casa/gAAAAABgz6UJ3pIqj-Ijc9347eeeG2mUKRJbVkzV
 
 async def send_webhooks(payload):
     print(f'started {send_webhooks.__name__}')
+    responses = []
     for url in webhookUrls:
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=payload ) as resp:
-                print(await resp.text())
+                responses.append(resp.status)
+    return responses

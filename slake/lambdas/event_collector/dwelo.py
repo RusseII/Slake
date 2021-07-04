@@ -26,13 +26,13 @@ class Dwelo_Device:
         async with aiohttp.ClientSession() as session:
             async with session.post(
                     f'{dwelo_url}/device/{self.device.id}/command', json=self.device.off_command, headers=self.headers) as resp:
-                return await resp.json()
+                return resp.status
 
     async def on(self):
         async with aiohttp.ClientSession() as session:
             async with session.post(
                     f'{dwelo_url}/device/{self.device.id}/command', json=self.device.on_command, headers=self.headers) as resp:
-                return await resp.json()
+                return resp.status
 
 
 @dataclass(frozen=True)
