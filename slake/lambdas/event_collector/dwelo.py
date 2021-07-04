@@ -1,8 +1,11 @@
+import aiohttp
+from telegram_bot import Status
+from dataclasses import dataclass
 from secrets import get_secret
 import requests
+import asyncio
+
 dwelo_url = 'https://api.dwelo.com/v3'
-from dataclasses import dataclass
-from telegram_bot import Status
 
 
 def get_auth_token():
@@ -19,15 +22,18 @@ class Dwelo_Device:
         self.device = device
         self.headers = {"authorization": auth_token}
 
-    def off(self):
-        resp = requests.post(
-            f'{dwelo_url}/device/{self.device.id}/command', json=self.device.off_command, headers=self.headers)
-        print(resp.json())
+    async def off(self):
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                    f'{dwelo_url}/device/{self.device.id}/command', json=self.device.off_command, headers=self.headers) as resp:
+                return await resp.json()
 
-    def on(self):
-        resp = requests.post(
-            f'{dwelo_url}/device/{self.device.id}/command', json=self.device.on_command, headers=self.headers)
-        print(resp.json())
+    async def on(self):
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                    f'{dwelo_url}/device/{self.device.id}/command', json=self.device.on_command, headers=self.headers) as resp:
+                return await resp.json()
+
 
 @dataclass(frozen=True)
 class Light:
@@ -43,20 +49,20 @@ class Lock:
     off_command = {"command": "unlock"}
 
 
-
-def handle_dwelo(status: Status):
+async def handle_dwelo(status: Status):
+    print(f'started {handle_dwelo.__name__}')
     token = get_auth_token()
     kitchen_light = Dwelo_Device(Light(), token)
     lock = Dwelo_Device(Lock(), token)
     if (status == Status.SINGLE):
-        kitchen_light.on()
-        lock.off()
-        
-    if (status == Status.DOUBLE):
-        kitchen_light.off()
-        lock.on()
-  
+        return await asyncio.gather(
+            kitchen_light.on(),
+            lock.off())
 
+    if (status == Status.DOUBLE):
+        return await asyncio.gather(
+            kitchen_light.off(),
+            lock.on())
 
 
 if __name__ == "__main__":
