@@ -32,7 +32,7 @@ class SlakeStack(cdk.Stack):
             name='id', type=AttributeType.STRING))
 
         event_collector = PythonFunction(self, 'event_collector', entry=os.path.join(
-            os.getcwd(), 'slake/lambdas/event_collector'), timeout=core.Duration.seconds(15), environment={'TABLE_NAME': db.table_name})
+            os.getcwd(), 'slake/lambdas/event_collector'), timeout=core.Duration.seconds(15), environment={'TABLE_NAME': db.table_name}, memory_size=256)
         
 
         db.grant_write_data(event_collector)

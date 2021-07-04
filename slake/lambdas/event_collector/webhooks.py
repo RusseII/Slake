@@ -10,5 +10,6 @@ async def send_webhooks(payload):
     for url in webhookUrls:
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=payload ) as resp:
+                print(f'webhook sent to ${url}')
                 responses.append(resp.status)
     return responses

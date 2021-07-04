@@ -14,13 +14,14 @@ dynamodb = boto3.resource('dynamodb')
 TABLE_NAME = os.environ['TABLE_NAME']
 
 
-async def dynamodb_insert(payload):
+def dynamodb_insert(payload):
     payload['id'] = str(uuid.uuid4())
     payload['clickType'] = payload['devicePayload']['clickType']
     payload['reportedTime'] = payload['devicePayload']['reportedTime']
     table = dynamodb.Table(TABLE_NAME)
-    return table.put_item(
+    table_result =  table.put_item(
         Item=payload)
+    return table_result
 async def main(event, context):
     print(event)
     event = json.loads(json.dumps(event), parse_float=Decimal)
@@ -34,8 +35,9 @@ async def main(event, context):
         handle_dwelo(Status[event['devicePayload']['clickType']]),
         send_telegram_message(Status[event['devicePayload']['clickType']]),
         send_webhooks(webhook_data),
-        dynamodb_insert(event)
     )
+    dynamodb_insert(event)
+
 
     print(L)
     return L
