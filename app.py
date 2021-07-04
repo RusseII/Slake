@@ -7,15 +7,16 @@ import os
 # being updated to use `cdk`.  You may delete this import if you don't need it.
 from aws_cdk import core
 
-# from slake.slake_stack import SlakeStack
+from slake.slake_stack import SlakeStack
 from my_pipeline.my_pipeline_stack import MyPipelineStack
 
 
 env_USA = core.Environment(account="576758376358", region="us-west-2")
 
 app = core.App()
-# SlakeStack(app, "slake", env=env_USA)
+SlakeStack(app, "slake", env=env_USA)
 MyPipelineStack(app, "slake-pipeline",
     env=env_USA)
+
 app.synth()
 

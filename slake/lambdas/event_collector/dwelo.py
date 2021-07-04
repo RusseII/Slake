@@ -29,14 +29,14 @@ class Dwelo_Device:
             f'{dwelo_url}/device/{self.device.id}/command', json=self.device.on_command, headers=self.headers)
         print(resp.json())
 
-@dataclass(Frozen=True)
+@dataclass(frozen=True)
 class Light:
     id = "381217"
     on_command = {"command": "on"}
     off_command = {"command": "off"}
 
 
-@dataclass(Frozen=True)
+@dataclass(frozen=True)
 class Lock:
     id = "381219"
     on_command = {"command": "lock"}
